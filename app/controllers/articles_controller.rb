@@ -3,39 +3,40 @@ class ArticlesController < ApplicationController
 
   # GET /articles
   def index
-    @articles = Article.all
+    articles = Article.all
 
-    render json: @articles
+    render json: { data: ArticleSerializer.wrap(articles) }, status: :ok
   end
 
   # GET /articles/1
   def show
-    render json: @article
+    render json: { data: ArticleSerializer.new(@article) }, status: :ok
   end
 
   # POST /articles
   def create
-    @article = Article.new(article_params)
+    article = Article.new(article_params)
 
-    if @article.save
-      render json: @article, status: :created, location: @article
+    if article.save
+      render json: { data: ArticleSerializer.new(articles) }, status: :created
     else
-      render json: @article.errors, status: :unprocessable_entity
+      render json: { errors: article.errors }, status: :unprocessable_entity
     end
   end
 
   # PATCH/PUT /articles/1
   def update
     if @article.update(article_params)
-      render json: @article
+      render json: { data: ArticleSerializer.new(@article) }, status: :ok
     else
-      render json: @article.errors, status: :unprocessable_entity
+      render json: { errors: @article.errors }, status: :unprocessable_entity
     end
   end
 
   # DELETE /articles/1
   def destroy
     @article.destroy
+    head :ok
   end
 
   private

@@ -3,39 +3,39 @@ class StoriesController < ApplicationController
 
   # GET /stories
   def index
-    @stories = Story.all
-
-    render json: @stories
+    stories = Story.all
+    render json: { data: StorySerializer.wrap(stories) }, status: :ok
   end
 
   # GET /stories/1
   def show
-    render json: @story
+    render json: { data: StorySerializer.new(@story) }, status: :ok
   end
 
   # POST /stories
   def create
-    @story = Story.new(story_params)
+    story = Story.new(story_params)
 
-    if @story.save
-      render json: @story, status: :created, location: @story
+    if story.save
+      render json: { data: StorySerializer.new(story) }, status: :created
     else
-      render json: @story.errors, status: :unprocessable_entity
+      render json: { errors: story.errors }, status: :unprocessable_entity
     end
   end
 
   # PATCH/PUT /stories/1
   def update
     if @story.update(story_params)
-      render json: @story
+      render json: { data: StorySerializer.new(@story) }, status: :ok
     else
-      render json: @story.errors, status: :unprocessable_entity
+      render json: { errors: story.errors }, status: :unprocessable_entity
     end
   end
 
   # DELETE /stories/1
   def destroy
     @story.destroy
+    head :ok
   end
 
   private
