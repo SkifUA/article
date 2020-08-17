@@ -18,7 +18,7 @@ class ArticlesController < ApplicationController
     article = Article.new(article_params)
 
     if article.save
-      render json: { data: ArticleSerializer.new(articles) }, status: :created
+      render json: { data: ArticleSerializer.new(article) }, status: :created
     else
       render json: { errors: article.errors }, status: :unprocessable_entity
     end
@@ -47,6 +47,6 @@ class ArticlesController < ApplicationController
 
     # Only allow a trusted parameter "white list" through.
     def article_params
-      params.require(:article).permit(:name, :text, :type)
+      params.permit(:name, :text, :article_type, story_ids: [])
     end
 end

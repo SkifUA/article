@@ -3,7 +3,9 @@ class StoriesController < ApplicationController
 
   # GET /stories
   def index
-    stories = Story.all
+    stories = Story.search(search_params[:q])
+                  .includes(:last_created_article, :articles)
+                  .page(search_params[:page] || 1)
     render json: { data: StorySerializer.wrap(stories) }, status: :ok
   end
 
@@ -14,7 +16,7 @@ class StoriesController < ApplicationController
 
   # POST /stories
   def create
-    story = Story.new(story_params)
+    story = ::Story.new(story_params)
 
     if story.save
       render json: { data: StorySerializer.new(story) }, status: :created
@@ -46,6 +48,10 @@ class StoriesController < ApplicationController
 
     # Only allow a trusted parameter "white list" through.
     def story_params
-      params.require(:story).permit(:name)
+      params.permit(:name, article_ids: [])
+    end
+
+    def search_params
+      params.permit(:page, q: [])
     end
 end

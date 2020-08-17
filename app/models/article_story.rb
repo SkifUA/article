@@ -3,6 +3,6 @@ class ArticleStory < ApplicationRecord
 
   belongs_to :article
   belongs_to :story, counter_cache: :articles_count
-# Record.group(:date).distinct.count(:date)
+
   scope :by_article_created, ->(order = :desc){ joins(:article).includes(:article).order("articles.created_at #{order}") }
 end
