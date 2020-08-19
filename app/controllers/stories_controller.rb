@@ -52,6 +52,6 @@ class StoriesController < ApplicationController
     end
 
     def search_params
-      params.permit(:page, q: [])
+      params.permit(:page, q: {})
     end
 end
