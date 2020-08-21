@@ -13,6 +13,10 @@ class Story < ApplicationRecord
     articles.pluck(:article_type).uniq.count
   end
 
+  def last_article
+    last_created_article&.article
+  end
+
   def self.ransackable_scopes(auth_object = nil)
     [:sort_by_id, :sort_by_name, :sort_by_articles_count, :sort_by_created_at, :sort_by_updated_at]
   end

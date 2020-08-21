@@ -58,8 +58,6 @@ class ApplicationSerializer
           nil
         elsif opt[:with].is_a?(Class) && (opt[:with] <= ApplicationSerializer)
           opt[:with].wrap(value)
-        elsif opt[:with].is_a?(Symbol) && DisplayFormat.format?(opt[:with])
-          DisplayFormat.send(opt[:with], value)
         else
           opt[:with].call(value)
         end
