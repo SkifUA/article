@@ -3,9 +3,8 @@ class StoriesController < ApplicationController
 
   # GET /stories
   def index
-    stories = Story.search(search_params[:q])
-                  .includes(:last_created_article, :articles)
-                  .page(search_params[:page] || 1)
+    stories = Story.search(search_params).includes(:articles)
+
     render json: { data: StorySerializer.wrap(stories) }, status: :ok
   end
 
@@ -52,6 +51,6 @@ class StoriesController < ApplicationController
     end
 
     def search_params
-      params.permit(:page, q: {})
+      params.permit(:page, scopes: {}, orders: {}, q: {})
     end
 end

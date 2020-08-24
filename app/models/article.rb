@@ -5,6 +5,10 @@ class Article < ApplicationRecord
   after_save :article_broadcast
 
 
+  def self.allowed_orders
+    [:id, :name, :article_type, :created_at, :updated_at, :text]
+  end
+
   private
 
   def article_broadcast

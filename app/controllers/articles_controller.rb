@@ -3,7 +3,7 @@ class ArticlesController < ApplicationController
 
   # GET /articles
   def index
-    articles = Article.all
+    articles = Article.search(search_params)
 
     render json: { data: ArticleSerializer.wrap(articles) }, status: :ok
   end
@@ -49,4 +49,8 @@ class ArticlesController < ApplicationController
     def article_params
       params.permit(:name, :text, :article_type, story_ids: [])
     end
+
+  def search_params
+    params.permit(:page, scopes: {}, orders: {}, q: {})
+  end
 end
