@@ -4,6 +4,6 @@ class StorySerializer < ::ApplicationSerializer
   attribute :created_at,      source: :object
   attribute :updated_at,      source: :object
   attribute :articles_count,  source: :object
-  attribute :count_types,     source: :object
+  attribute :types_count,     source: :object
   attribute :last_article,    source: :object, with: ArticleSerializer
 end

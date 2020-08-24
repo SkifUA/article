@@ -9,10 +9,14 @@ class Article < ApplicationRecord
     [:id, :name, :article_type, :created_at, :updated_at, :text]
   end
 
+  def self.allowed_scopes
+    []
+  end
+
   private
 
   def article_broadcast
-    ActionCable.server.broadcast "article_#{self.id}", self
+    ArticleBroadcastJob.perform_later(self)
   end
 
 end
