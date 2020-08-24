@@ -27,5 +27,7 @@ module Beckend
     config.active_job.queue_adapter = :sidekiq
 
     config.api_only = true
+
+    config.action_cable.allowed_request_origins = [/http:\/\/*/, /https:\/\/*/, /chrome-extension:\/\/*/]
   end
 end
