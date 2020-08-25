@@ -1,10 +1,12 @@
 development:
-  adapter: async
+  adapter: redis
+  url: <%= "#{ENV['REDISCLOUD_URL']}/1" %>
+  channel_prefix: articles
 
 test:
   adapter: test
 
 production:
   adapter: redis
-  url: <%= ENV.fetch("REDIS_URL") { "redis://localhost:6379" } + '/1'%>
-  channel_prefix: beckend_production
+  url: <%= "#{ENV['REDISCLOUD_URL']}/1"%>
+  channel_prefix: articles
