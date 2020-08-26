@@ -4,6 +4,7 @@ class Story < ApplicationRecord
   has_one :last_created_article, ->{ by_article_created }, class_name: 'ArticleStory'
 
   before_save :set_types_count
+  after_destroy :set_types_count
 
   scope :sort_by_article_id,     ->(order = :asc) { left_joins(:last_created_article).order("articles_stories.article_id #{order}") }
 

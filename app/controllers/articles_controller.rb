@@ -17,7 +17,7 @@ class ArticlesController < ApplicationController
   def create
     article = Article.new(article_params)
     if article.save
-      ArticleBroadcastJob.perform_later(article)
+      ActionCable.server.broadcast('articles', data: ArticleSerializer.new(article))
       head :ok
     else
       render json: { errors: article.errors }, status: :unprocessable_entity
@@ -35,7 +35,7 @@ class ArticlesController < ApplicationController
 
   # DELETE /articles/1
   def destroy
-    @article.destroy
+    ActionCable.server.broadcast('delete_article', id: @article.id) if @article.destroy
     head :ok
   end
 
