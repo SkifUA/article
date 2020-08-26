@@ -1,5 +1,5 @@
 class ArticleBroadcastJob < ApplicationJob
   def perform(article)
-    ArticlesChannel.server.broadcast "article", article
+    ActionCable.server.broadcast 'articles', data: ArticleSerializer.new(article)
   end
 end

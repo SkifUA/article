@@ -16,9 +16,9 @@ class ArticlesController < ApplicationController
   # POST /articles
   def create
     article = Article.new(article_params)
-
     if article.save
-      render json: { data: ArticleSerializer.new(article) }, status: :created
+      ArticleBroadcastJob.perform_later(article)
+      head :ok
     else
       render json: { errors: article.errors }, status: :unprocessable_entity
     end

@@ -2,8 +2,6 @@ class Article < ApplicationRecord
   has_many :article_stories, dependent: :delete_all
   has_many :stories, through: :article_stories
 
-  after_save :article_broadcast
-
   scope :name_cant, ->(input) { where('name LIKE ?', "%#{input}%") }
   scope :article_type_cant, ->(input) { where('article_type LIKE ?', "%#{input}%") }
   scope :text_cant, ->(input) { where('text LIKE ?', "%#{input}%") }
@@ -15,12 +13,6 @@ class Article < ApplicationRecord
 
   def self.allowed_scopes
     [:name_cant, :article_type_cant, :text_cant]
-  end
-
-  private
-
-  def article_broadcast
-    ArticleBroadcastJob.perform_later(self)
   end
 
 end
