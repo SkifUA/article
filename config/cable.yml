@@ -1,6 +1,6 @@
 development:
   adapter: redis
-  url: <%= "#{ENV['REDISCLOUD_URL']}/1" %>
+  url: <%= "#{ENV['REDISCLOUD_URL']}" %>
   channel_prefix: articles
 
 test:
@@ -8,5 +8,5 @@ test:
 
 production:
   adapter: redis
-  url: <%= "#{ENV['REDISCLOUD_URL']}/1"%>
+  url: <%= "#{ENV['REDISCLOUD_URL']}"%>
   channel_prefix: articles
