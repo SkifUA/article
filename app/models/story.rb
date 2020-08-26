@@ -3,8 +3,8 @@ class Story < ApplicationRecord
   has_many :articles, through: :article_stories
   has_one :last_created_article, ->{ by_article_created }, class_name: 'ArticleStory'
 
-  before_save :set_types_count
-  after_destroy :set_types_count
+  before_update :set_types_count
+  before_create :set_created_types_count
 
   scope :sort_by_article_id,     ->(order = :asc) { left_joins(:last_created_article).order("articles_stories.article_id #{order}") }
 
@@ -24,7 +24,6 @@ class Story < ApplicationRecord
     [:name_cant]
   end
 
-
   def calculate_types_count
     articles.pluck(:article_type).uniq.count
   end
@@ -33,5 +32,9 @@ class Story < ApplicationRecord
 
   def set_types_count
     self.types_count = calculate_types_count
+  end
+
+  def set_created_types_count
+    self.types_count = Article.where(id: article_ids).pluck(:article_type).uniq.count
   end
 end
