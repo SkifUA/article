@@ -5,5 +5,5 @@ class StorySerializer < ::ApplicationSerializer
   attribute :updated_at,      source: :object
   attribute :articles_count,  source: :object
   attribute :types_count,     source: :object
-  attribute :last_article,    source: :object, with: ArticleSerializer
+  attribute :last_article,    source: :object, with: ->(m) { ArticleSerializer.new(m.first) }
 end
