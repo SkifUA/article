@@ -4,8 +4,9 @@ class ArticlesController < ApplicationController
   # GET /articles
   def index
     articles = Article.search(search_params)
+    decorated_articles = ArticlesDecorateInteractor.call(group: search_params[:group], articles: articles)
 
-    render json: { data: ArticleSerializer.wrap(articles, meta: { group: search_params[:group] }) }, status: :ok
+    render json: { data: ArticleSerializer.wrap(decorated_articles.result) }, status: :ok
   end
 
   # GET /articles/1

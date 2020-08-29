@@ -2,6 +2,9 @@ class Story < ApplicationRecord
   has_and_belongs_to_many :articles, through: :article_stories
   has_and_belongs_to_many :last_article, ->{ order(created_at: :desc).limit(1) }, class_name: 'Article'
 
+  attribute :group
+  attribute :group_value
+
   before_update :update_types_count
   before_create :set_created_types_count
   before_save :update_article_counts

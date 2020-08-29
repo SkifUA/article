@@ -3,6 +3,9 @@ class Article < ApplicationRecord
 
   before_destroy :update_stories_counting
 
+  attribute :group
+  attribute :group_value
+
   scope :name_cont, ->(input) { where('name LIKE ?', "%#{input}%") }
   scope :article_type_cont, ->(input) { where('article_type LIKE ?', "%#{input}%") }
   scope :text_cont, ->(input) { where('text LIKE ?', "%#{input}%") }

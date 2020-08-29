@@ -5,14 +5,6 @@ class ArticleSerializer < ::ApplicationSerializer
   attribute :article_type,        source: :object
   attribute :created_at,          source: :object
   attribute :updated_at,          source: :object
-  attribute :group
-  attribute :group_value
-
-  def group
-    meta[:group]
-  end
-
-  def group_value
-    object.try(:set, meta[:group]) if meta[:group].present?
-  end
+  attribute :group,               source: :object
+  attribute :group_value,         source: :object
 end
