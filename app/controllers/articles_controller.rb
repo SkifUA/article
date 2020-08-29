@@ -5,7 +5,7 @@ class ArticlesController < ApplicationController
   def index
     articles = Article.search(search_params)
 
-    render json: { data: ArticleSerializer.wrap(articles) }, status: :ok
+    render json: { data: ArticleSerializer.wrap(articles, meta: { group: search_params[:group] }) }, status: :ok
   end
 
   # GET /articles/1
@@ -51,6 +51,6 @@ class ArticlesController < ApplicationController
     end
 
   def search_params
-    params.permit(:page, scopes: {}, orders: {})
+    params.permit(:page, :group, scopes: {}, orders: {})
   end
 end

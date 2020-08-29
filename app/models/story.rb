@@ -15,12 +15,13 @@ class Story < ApplicationRecord
   end
 
   def self.allowed_scopes
-    [:name_cant]
+    [:name_cont]
   end
 
   def calculate_types_count
     articles.pluck(:article_type).uniq.count
   end
+
 
   private
 

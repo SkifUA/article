@@ -3,16 +3,19 @@ class Article < ApplicationRecord
 
   before_destroy :update_stories_counting
 
-  scope :name_cant, ->(input) { where('name LIKE ?', "%#{input}%") }
-  scope :article_type_cant, ->(input) { where('article_type LIKE ?', "%#{input}%") }
-  scope :text_cant, ->(input) { where('text LIKE ?', "%#{input}%") }
+  scope :name_cont, ->(input) { where('name LIKE ?', "%#{input}%") }
+  scope :article_type_cont, ->(input) { where('article_type LIKE ?', "%#{input}%") }
+  scope :text_cont, ->(input) { where('text LIKE ?', "%#{input}%") }
+  scope :wherever_cont, ->(input) do
+    where('name LIKE ? OR article_type LIKE ? OR text LIKE ?', "%#{input}%", "%#{input}%", "%#{input}%")
+  end
 
   def self.allowed_orders
     [:id, :name, :article_type, :created_at, :updated_at, :text]
   end
 
   def self.allowed_scopes
-    [:name_cant, :article_type_cant, :text_cant]
+    [:name_cont, :article_type_cont, :text_cont, :wherever_cont]
   end
 
 

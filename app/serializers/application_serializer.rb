@@ -3,10 +3,12 @@ class ApplicationSerializer
 
   # Default serialized object
   attr_reader :object
+  attr_reader :meta
 
 
-  def initialize(obj)
+  def initialize(obj, meta: {})
     @object = obj
+    @meta = meta
   end
 
   # Return list of all Attributes
@@ -22,11 +24,11 @@ class ApplicationSerializer
     attr_reader :attributes
 
     # Wrap list
-    def wrap(objects)
+    def wrap(objects, meta: {})
       if objects.respond_to?(:to_ary)
-        (objects.to_ary || [objects]).map { |o| self.new(o) }
+        (objects.to_ary || [objects]).map { |o| self.new(o, meta: meta) }
       else
-        self.new(objects)
+        self.new(objects, meta: meta)
       end
     end
 
