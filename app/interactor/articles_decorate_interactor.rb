@@ -24,6 +24,6 @@ class ArticlesDecorateInteractor < ApplicationInteractor
   private
 
   def group_value(object)
-    object.try(:send, group)
+    object.try(:send, group.split('.').last)
   end
 end

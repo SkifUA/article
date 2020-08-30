@@ -9,17 +9,19 @@ class Article < ApplicationRecord
   scope :name_cont, ->(input) { where('name LIKE ?', "%#{input}%") }
   scope :article_type_cont, ->(input) { where('article_type LIKE ?', "%#{input}%") }
   scope :text_cont, ->(input) { where('text LIKE ?', "%#{input}%") }
-  scope :wherever_cont, ->(input) do
-    where('name LIKE ? OR article_type LIKE ? OR text LIKE ?', "%#{input}%", "%#{input}%", "%#{input}%")
-  end
+  scope :name_or_text_cont, ->(input) { name_cont(input).or(text_cont(input))}
+  # scope :wherever_cont, ->(input) do
+  #   where('name LIKE ? OR article_type LIKE ? OR text LIKE ?', "%#{input}%", "%#{input}%", "%#{input}%")
+  # end
   scope :last_created, ->{ order(created_at: :desc).limit(1) }
 
   def self.allowed_orders
-    [:id, :name, :article_type, :created_at, :updated_at, :text]
+    ['articles.id', 'articles.name', 'articles.article_type', 'articles.created_at',
+     'articles.updated_at', 'articles.text']
   end
 
   def self.allowed_scopes
-    [:name_cont, :article_type_cont, :text_cont, :wherever_cont]
+    [:name_cont, :article_type_cont, :text_cont, :name_or_text_cont]
   end
 
 
