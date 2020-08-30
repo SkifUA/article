@@ -11,7 +11,7 @@ class Article < ApplicationRecord
   scope :text_cont, ->(input) { where('text LIKE ?', "%#{input}%") }
   scope :name_or_text_cont, ->(input) { name_cont(input).or(text_cont(input))}
   # scope :wherever_cont, ->(input) do
-  #   where('name LIKE ? OR article_type LIKE ? OR text LIKE ?', "%#{input}%", "%#{input}%", "%#{input}%")
+  #   where('name LIKE ? OR article_type LIKE ? OR text LIKE ?', "%#{input}%", "%#{input}%", "%#{input}%")schema_migrations
   # end
   scope :last_created, ->{ order(created_at: :desc).limit(1) }
 
@@ -29,15 +29,13 @@ class Article < ApplicationRecord
 
   def update_stories_by_destroy
     data = stories.includes(:articles).map do |story|
-      latest_article_id = story.articles.present? ? story.articles.sort_by { |a| a.created_at }.last.id : nil
-      article_types = story.articles.map(&:article_type)
-      types_number = article_types.group_by{ |e| e }.select { |_k, v| v.size > 1 }.map(&:first).include?(article_type) ?
-                         story.types_count :
-                         story.types_count - 1
+      _articles = story.articles.select { |a| a.id != id}
+      latest_article_id = _articles.present? ? _articles.sort_by { |a| a.created_at }.last.id : nil
+      article_types_count = _articles.map(&:article_type).uniq.count
 
       [
           story.id,
-          { articles_count: story.articles_count - 1, types_count: types_number, latest_article_id: latest_article_id }
+          { articles_count: _articles.count, types_count: article_types_count, latest_article_id: latest_article_id }
       ]
     end
 

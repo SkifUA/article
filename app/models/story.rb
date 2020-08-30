@@ -1,6 +1,6 @@
 class Story < ApplicationRecord
   has_and_belongs_to_many :articles
-  belongs_to :latest_article, class_name: 'Article', optional: true
+  belongs_to :latest_article, class_name: 'Article', optional: true, foreign_key: :latest_article_id
 
   attribute :group
   attribute :group_value

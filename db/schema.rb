@@ -36,9 +36,7 @@ ActiveRecord::Schema.define(version: 2020_08_30_065219) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.integer "types_count", default: 0
-    t.bigint "latest_article_id"
-    t.index ["latest_article_id"], name: "index_stories_on_latest_article_id"
+    t.integer "latest_article_id"
   end
 
-  add_foreign_key "stories", "articles", column: "latest_article_id"
 end

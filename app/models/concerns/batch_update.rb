@@ -43,8 +43,10 @@ module BatchUpdate
     def normalisation_value(value)
       if value.is_a?(Integer) || value == !!value
         value
-      elsif value.date?
+      elsif value.try(:date?)
         "TIMESTAMP '#{value}'"
+      elsif value.nil?
+        "NULL"
       else
         "'#{value}'"
       end
