@@ -22,4 +22,7 @@ test:
 
 production:
   <<: *default
-  url: <%= ENV['DATABASE_URL'] %>
+  host: localhost
+  user: <%= ENV['DB_PG_USER'] %>
+  password: <%= ENV['DB_PG_PASSWORD'] %>
+  database: beckend_prodaction
