@@ -25,8 +25,7 @@ class StoriesDecorateInteractor < ApplicationInteractor
   private
 
   def group_value(object)
-      model = group.start_with?('article.') ? object.last_article.first : object
-      field = group.start_with?('article.') ? group.sub('article.', '') : group
-      model.try(:send, field)
+      model = group.start_with?('articles.') ? object.last_article.first : object
+      model.try(:send, group.split('.').last)
   end
 end

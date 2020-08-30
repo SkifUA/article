@@ -3,7 +3,7 @@ class StoriesController < ApplicationController
 
   # GET /stories
   def index
-    stories = Story.search(search_params).includes(:articles)
+    stories = Story.includes(:latest_article).search(search_params)
 
     decorated_stories = StoriesDecorateInteractor.call(stories: stories, group: search_params[:group] )
     render json: { data: StorySerializer.wrap(decorated_stories.result) }, status: :ok

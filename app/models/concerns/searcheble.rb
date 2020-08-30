@@ -16,7 +16,8 @@ module Searcheble
         query = self
 
         search_params[:orders].map do |key, value|
-          "#{key} #{direction(value)}" if self.allowed_orders.include?(key.to_sym) && value.present?
+          next if search_params[:group].present? && search_params[:group] != key
+          "#{key} #{direction(value)}" if self.allowed_orders.include?(key) && value.present?
         end
             .compact
             .each do |order|

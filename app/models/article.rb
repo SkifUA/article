@@ -1,7 +1,7 @@
 class Article < ApplicationRecord
   has_and_belongs_to_many :stories
 
-  before_destroy :update_stories_counting
+  before_destroy :update_stories_by_destroy
 
   attribute :group
   attribute :group_value
@@ -12,6 +12,7 @@ class Article < ApplicationRecord
   scope :wherever_cont, ->(input) do
     where('name LIKE ? OR article_type LIKE ? OR text LIKE ?', "%#{input}%", "%#{input}%", "%#{input}%")
   end
+  scope :last_created, ->{ order(created_at: :desc).limit(1) }
 
   def self.allowed_orders
     [:id, :name, :article_type, :created_at, :updated_at, :text]
@@ -24,14 +25,18 @@ class Article < ApplicationRecord
 
   private
 
-  def update_stories_counting
+  def update_stories_by_destroy
     data = stories.includes(:articles).map do |story|
+      latest_article_id = story.articles.present? ? story.articles.sort_by { |a| a.created_at }.last.id : nil
       article_types = story.articles.map(&:article_type)
       types_number = article_types.group_by{ |e| e }.select { |_k, v| v.size > 1 }.map(&:first).include?(article_type) ?
                          story.types_count :
                          story.types_count - 1
 
-      [story.id, { articles_count: story.articles_count - 1, types_count: types_number }]
+      [
+          story.id,
+          { articles_count: story.articles_count - 1, types_count: types_number, latest_article_id: latest_article_id }
+      ]
     end
 
     Story.batch_update(data.to_h) if data.present?
