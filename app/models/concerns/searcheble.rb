@@ -6,7 +6,7 @@ module Searcheble
       def search(params)
 
         search_params = if params.is_a? ActionController::Parameters
-                          params.permit(:page, orders: {}, q: {}, scopes: {}).to_h
+                          params.permit(:page, :group, orders: {}, scopes: {}).to_h
                       elsif params.nil?
                         {}
                       else
@@ -16,7 +16,8 @@ module Searcheble
         query = self
 
         search_params[:orders].map do |key, value|
-          "#{key} #{direction(value)}" if self.allowed_orders.include? key.to_sym
+          next if search_params[:group].present? && search_params[:group] != key
+          "#{key} #{direction(value)}" if self.allowed_orders.include?(key) && value.present?
         end
             .compact
             .each do |order|
@@ -24,7 +25,7 @@ module Searcheble
         end if search_params[:orders].present?
 
         search_params[:scopes].each do |key, value|
-          query = query.send(key, value) if self.allowed_scopes.include? key.to_sym
+          query = query.send(key, value) if self.allowed_scopes.include?(key.to_sym) && value.present?
         end if search_params[:scopes].present?
 
         # query = query.group('articles.id')

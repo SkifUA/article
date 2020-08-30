@@ -4,8 +4,9 @@ class ArticlesController < ApplicationController
   # GET /articles
   def index
     articles = Article.search(search_params)
+    decorated_articles = ArticlesDecorateInteractor.call(group: search_params[:group], articles: articles)
 
-    render json: { data: ArticleSerializer.wrap(articles) }, status: :ok
+    render json: { data: ArticleSerializer.wrap(decorated_articles.result) }, status: :ok
   end
 
   # GET /articles/1
@@ -51,6 +52,6 @@ class ArticlesController < ApplicationController
     end
 
   def search_params
-    params.permit(:page, scopes: {}, orders: {})
+    params.permit(:page, :group, scopes: {}, orders: {})
   end
 end

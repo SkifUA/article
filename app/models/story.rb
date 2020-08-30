@@ -1,26 +1,29 @@
 class Story < ApplicationRecord
-  has_and_belongs_to_many :articles, through: :article_stories
-  has_and_belongs_to_many :last_article, ->{ order(created_at: :desc).limit(1) }, class_name: 'Article'
+  has_and_belongs_to_many :articles
+  belongs_to :latest_article, class_name: 'Article', optional: true
 
-  before_update :update_types_count
-  before_create :set_created_types_count
-  before_save :update_article_counts
+  attribute :group
+  attribute :group_value
+
+  before_save :set_params_by_articles
 
   def count_types
     articles.pluck(:article_type).uniq.count
   end
 
   def self.allowed_orders
-    [:id, :name, :articles_count, :created_at, :updated_at, :types_count]
+    ['stories.id', 'stories.name', 'stories.articles_count', 'stories.created_at',
+     'stories.updated_at', 'stories.types_count', 'articles.id', :'articles.article_type']
   end
 
   def self.allowed_scopes
-    [:name_cant]
+    [:name_cont]
   end
 
   def calculate_types_count
     articles.pluck(:article_type).uniq.count
   end
+
 
   private
 
@@ -28,8 +31,11 @@ class Story < ApplicationRecord
     self.types_count = calculate_types_count
   end
 
-  def set_created_types_count
-    self.types_count = Article.where(id: article_ids).pluck(:article_type).uniq.count
+  def set_params_by_articles
+    _articles = Article.where(id: article_ids)
+    self.latest_article_id = _articles.sort_by { |a| a.created_at }.last.id if _articles.present?
+    self.types_count = _articles.map(&:article_type).uniq.count
+    self.articles_count = article_ids.count
   end
 
   def update_article_counts

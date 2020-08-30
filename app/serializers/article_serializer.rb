@@ -5,4 +5,6 @@ class ArticleSerializer < ::ApplicationSerializer
   attribute :article_type,        source: :object
   attribute :created_at,          source: :object
   attribute :updated_at,          source: :object
+  attribute :group,               source: :object
+  attribute :group_value,         source: :object
 end
