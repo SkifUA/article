@@ -34,7 +34,7 @@ class Article < ApplicationRecord
       article_types_count = _articles.map(&:article_type).uniq.count
 
       [
-          story.id,
+          story.id.to_i,
           { articles_count: _articles.count, types_count: article_types_count, latest_article_id: latest_article_id }
       ]
     end

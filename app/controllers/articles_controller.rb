@@ -28,7 +28,8 @@ class ArticlesController < ApplicationController
   # PATCH/PUT /articles/1
   def update
     if @article.update(article_params)
-      render json: { data: ArticleSerializer.new(@article) }, status: :ok
+      ActionCable.server.broadcast('update_article', data: ArticleSerializer.new(@article))
+      head :ok
     else
       render json: { errors: @article.errors }, status: :unprocessable_entity
     end

@@ -1,6 +1,6 @@
-class DeleteArticleChannel < ApplicationCable::Channel
+class UpdateArticleChannel < ApplicationCable::Channel
   def subscribed
-    stream_from "delete_article"
+    stream_from "update_article"
   end
 
   def unsubscribed
