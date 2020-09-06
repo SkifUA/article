@@ -1,0 +1,70 @@
+version: '3.4'
+services:
+
+  api:
+    image: api_article
+    build:
+      context: .
+      args:
+        RUBY_VERSION: '2.6.5'
+        NODE_MAJOR: '13'
+        YARN_VERSION: '1.21.1'
+        BUNDLER_VERSION: '2.1.4'
+    restart: always
+    ports:
+      - "3000:3000"
+    env_file:
+      - './../.env_backend'
+    depends_on:
+      - db
+    tty: true
+    stdin_open: true
+    networks:
+      - article-network
+
+  db:
+    image: postgres:12.2
+    volumes:
+      - db:/var/lib/postgresql/data
+    restart: always
+    environment:
+      - POSTGRES_USER=article
+      - POSTGRES_DB=artocle
+      - POSTGRES_PASSWORD=Qwer1234
+    networks:
+      - article-network
+
+  sidekiq:
+    image: api_article
+    entrypoint: bundle exec sidekiq -c 5 -v
+    restart: always
+    depends_on:
+      - db
+      - redis
+    env_file:
+      - './../.env_backend'
+    networks:
+      - article-network
+
+  redis:
+    image: redis:5.0-alpine
+    restart: always
+    volumes:
+      - redis:/data
+    healthcheck:
+      test: redis-cli ping
+      interval: 1s
+      timeout: 3s
+      retries: 30
+    networks:
+      - article-network
+
+volumes:
+  db:
+  redis:
+
+networks:
+  article-network:
+    external:
+      name: gateway
+
